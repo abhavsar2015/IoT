@@ -1,0 +1,31 @@
+#include <SPI.h>
+#include <Ethernet.h>
+#include <ThingerEthernet.h>
+
+#define USERNAME "apurv"
+#define DEVICE_ID "temp226"
+#define DEVICE_CREDENTIAL "Appu100@"
+
+ThingerEthernet thing(USERNAME, DEVICE_ID, DEVICE_CREDENTIAL);
+const int temperaturePin = 0;
+
+void setup() {
+  
+  
+
+  // resource output example (i.e. reading a sensor value, a variable, etc)
+  thing["in_out"] = [](pson& in, pson& out){
+      out["celsius"] = (getVoltage(temperaturePin) - 0.5) * 100.0;
+      out["fahrenheit"] = (((getVoltage(temperaturePin) - 0.5) * 100.0)* (9.0/5.0) + 32.0);
+    };
+
+  // more details at http://docs.thinger.io/arduino/
+}
+
+void loop() {
+  thing.handle();
+}
+float getVoltage(int pin)
+{
+   return (analogRead(pin) * 0.004882814);
+}
